@@ -35,7 +35,8 @@ func test() {
 }
 
 // TODO hookup sqlite3 database with curated animations & music
-// TODO display animation on html template
+
+// TODO generate random animation each reload
 // TODO change animation every given time frame
 
 // TODO play a song

@@ -2,9 +2,9 @@ package models
 
 type Artist struct {
 	Id          int
-	name        string
-	url         string
-	description string
+	Name        string
+	Url         string
+	Description string
 }
 
 type Animation struct {

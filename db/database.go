@@ -1,64 +1,69 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"log"
-	"strconv"
+	"path/filepath"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
-	// resetAnimationTable()
-	database, err := sql.Open("sqlite3", "./evangellion.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer database.Close()
+var schema = `
+CREATE TABLE animation (
+    artist text,
+	source text
+);
+`
 
-	statement, _ := database.Prepare("CREATE TABLE IF NOT EXISTS animation (id INTEGER PRIMARY KEY, artist TEXT, source TEXT)")
-	statement.Exec()
-	defer statement.Close()
-
-	tx, err := database.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	statement, err = tx.Prepare("insert into animation( artist, source) values( ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	for index := 0; index < 50; index++ {
-		// artist := "valenberg"
-		// source := "ti"
-		_, err = statement.Exec("test"+string(index), "test"+string(index))
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	tx.Commit()
-	rows, _ := database.Query("SELECT id, artist, source from animation")
-	var id int
-	var artist string
-	var source string
-	for rows.Next() {
-		rows.Scan(&id, &artist, &source)
-		fmt.Println(strconv.Itoa(id) + ": " + artist + " " + source)
-	}
+// Animation struct
+type Animation struct {
+	Source string `db:"source"`
+	Artist string `db:"artist"`
 }
 
-func resetAnimationTable() {
-	fmt.Println("reseting")
-	database, err := sql.Open("sqlite3", "./evangellion.db")
-	statement, _ := database.Prepare("DROP TABLE IF EXISTS animation")
-	statement.Exec()
-	statement, _ = database.Prepare("CREATE TABLE IF NOT EXISTS animation (id INTEGER PRIMARY KEY, artist TEXT, source TEXT)")
-	statement.Exec()
+func main() {
+
+	database, err := sqlx.Open("sqlite3", "./evangellion.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer database.Close()
+
+	resetAnimationTable(database)
+
+	populateDB(database)
+
+	animations := []Animation{}
+	err = database.Select(&animations, "SELECT * FROM animation ORDER BY artist ASC")
+	fmt.Println(err, animations)
+}
+
+func populateDB(db *sqlx.DB) {
+	artist, animationPath := "valenberg", "/home/evan/code/go/src/evangellion/assets/animations/"
+	files, err := ioutil.ReadDir(animationPath + artist)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tx := db.MustBegin()
+	for _, f := range files {
+		fmt.Println(f.Name())
+		path := filepath.Join(animationPath, f.Name())
+		_, err = tx.NamedExec("INSERT INTO animation (artist, source) VALUES (:artist, :source)", &Animation{Source: path, Artist: artist})
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	tx.Commit()
+}
+
+func resetAnimationTable(database *sqlx.DB) {
+	fmt.Println("reseting")
+	statement, err := database.Prepare("DROP TABLE IF EXISTS animation")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec()
+	database.MustExec(schema)
 }
