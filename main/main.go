@@ -1,17 +1,16 @@
 package main
 
 import (
+	"evangellion/db"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
+	"net/http"
 	"path/filepath"
+	"text/template"
 )
 
-func main() {
-	loopAnimations()
-	test()
-}
+var templates = template.Must(template.ParseFiles("../templates/home.html"))
 
 func loopAnimations() {
 	files, err := ioutil.ReadDir("../assets/animations/valenberg")
@@ -26,12 +25,12 @@ func loopAnimations() {
 	}
 }
 
-func test() {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(dir)
+func main() {
+	a, _ := db.SnagAnimation()
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, *a)
+	})
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 // TODO hookup sqlite3 database with curated animations & music
