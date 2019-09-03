@@ -6,29 +6,66 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Evan socket</title>
   </head>
-  <body>
-    <h2>Hello World</h2>
+  <body style="width: 100%; height: 100%; background-color: #1f1a24; ">
+      <div style="background-image: url(../assets/animations/valenberg/valenberg.gif);
+        height: 100vh; 
+        background-size: cover;">
 
-    <script>
-        let socket = new WebSocket("ws://127.0.0.1:8080/ws");
-        console.log("Attempting Connection...");
-
-        socket.onopen = () => {
-            console.log("Successfully Connected");
-            socket.send("Hi From the Client!")
-        };
-        socket.onmessage = (msg) => {
-            console.log(msg);
-        }
-        socket.onclose = event => {
-            console.log("Socket Closed Connection: ", event);
-            socket.send("Client Closed!")
-        };
-
-        socket.onerror = error => {
-            console.log("Socket Error: ", error);
-        };
-
-    </script>
+      </div>
+      <!-- <img  style ="width:100px; height: 100px;"/> -->
   </body>
+  <script>
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+        
+      const blob = new Blob(byteArrays, {type: contentType});
+      return blob;
+    }
+
+      let socket = new WebSocket("ws://127.0.0.1:8080/ws");
+      console.log("Attempting Connection...");
+
+      socket.onopen = () => {
+          console.log("Successfully Connected");
+          socket.send("Hi From the Client!")
+      };
+      socket.onmessage = (msg) => {
+        console.log(msg)
+        data = JSON.parse(msg.data)
+
+        // blobImg = new Blob([data.Source],{type: 'image/gif'})
+        // const imageUrl = URL.createObjectURL(blobImg.slice());
+
+        const contentType = 'image/gif';
+        const b64Data = data.Source
+        const blob = b64toBlob(b64Data, contentType);
+        const blobUrl = URL.createObjectURL(blob);
+
+        const img = document.querySelector('img');
+        img.addEventListener('load', () => URL.revokeObjectURL(blobUrl));
+        document.querySelector('img').src = blobUrl;
+      }
+      socket.onclose = event => {
+          console.log("Socket Closed Connection: ", event);
+          socket.send("Client Closed!")
+      };
+
+      socket.onerror = error => {
+          console.log("Socket Error: ", error);
+      };
+
+  </script>
 </html>

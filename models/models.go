@@ -6,12 +6,11 @@ type Artist struct {
 	Url         string
 	Description string
 }
-
 type Animation struct {
-	Id     int
-	Source string
-	Vibes  []string
-	Artist Artist
+	// Id     int
+	Source []byte `db:"source"`
+	// Vibes  []string
+	Artist string `db:"artist"`
 }
 
 type Song struct {
