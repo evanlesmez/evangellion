@@ -15,8 +15,13 @@ CREATE TABLE animation (
     artist text,
 	source []byte
 );
+CREATE TABLE songs (
+	artist text,
+	source []byte
+)
 `
 
+// TODO music schema https://www.free-stock-music.com/
 func check(e error) {
 	if e != nil {
 		log.Fatal(e)
