@@ -17,7 +17,7 @@ func main() {
 			return
 		case <-ticker.C:
 			a, _ := db.SnagAnimation()
-			fmt.Println("Snag a new one: ", a.Source)
+			fmt.Println("Snag a new one: ", a)
 
 		}
 	}
