@@ -11,13 +11,14 @@ import (
 )
 
 var Schema = `
-CREATE TABLE animation (
+CREATE TABLE IF NOT EXISTS animation (
     artist text,
 	source []byte
 );
-CREATE TABLE songs (
+CREATE TABLE IF NOT EXISTS songs (
 	artist text,
-	source []byte
+	source []byte,
+	vibe text
 )
 `
 
@@ -45,7 +46,6 @@ func SnagAnimation() (*models.Animation, error) {
 
 // TODO should only be able to add blobs not already in there
 // TODO should be able to loop through entire animations directory
-// TODO Build database to have artist table, song table, vibe field
 func PopulateAnimations(db *sqlx.DB) {
 	artist, animationPath := "kirokazepixel", "/home/evan/code/go/src/evangellion/assets/animations/"
 	files, err := ioutil.ReadDir(animationPath + artist)
@@ -63,15 +63,20 @@ func PopulateAnimations(db *sqlx.DB) {
 	tx.Commit()
 }
 
-func BuildAnimationTable(db *sqlx.DB) {
-	fmt.Println("building animation table")
-	statement, err := db.Prepare("DROP TABLE IF EXISTS animation")
-	if err != nil {
-		log.Fatal(err)
-	}
-	statement.Exec()
+func BuildSchema(db *sqlx.DB) {
+	fmt.Println("Building tabls in the DB")
 	db.MustExec(Schema)
 }
+
+// func BuildAnimationTable(db *sqlx.DB) {
+// 	fmt.Println("building animation table")
+// 	statement, err := db.Prepare("DROP TABLE IF EXISTS animation")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	statement.Exec()
+// 	db.MustExec(Schema)
+// }
 
 // TODO make an autoincrement id
 

@@ -19,8 +19,7 @@ func reader(conn *websocket.Conn) {
 	for {
 		// read in a message
 
-		// TODO setup a schedule to snag a new random animation every 5 seconds (after test go to 30 or a minute)
-		// TODO send this new path in message to client
+		// TODO snag random song at the end of the previous song
 		// TODO client change src for img to new img
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <title>Tui & la</title>
+    <link rel="stylesheet" href="../styles/index.css">  
+    <script src="../jscripts/audiocontroller.js"></script>
+</head>   
+<body>
+<div class="header">
+    <h1>Wubalubadubdub!</h1>
+</div>
+<div class="page-wrapper">
+    <div class="audio">
+        <audio id="song" src="../assets/songs/keys-of-moon-voice-of-eternity.mp3" crossorigin="anonymous">
+    </div>
+    <div class="custom-controls flex-container">
+        <div class="flex-item">
+            <button data-playing="false" role="switch" aria-checked="false">
+                <span>Play/Pause</span>
+            </button>
+        </div>
+        <div class="flex-item">
+            <div class="center-block">
+                <label for="volume">VOL</label>
+            </div>
+            <input type="range" id="volume" min="0" max="2" value="1" step="0.01" list="gain-vals"/>
+        </div>
+        <div class="flex-item">
+            <div class="center-block">
+                <label for="pan">PAN</label>
+            </div>
+            <input type="range" id="panner" min="-1" max="1" value="0" step="0.01" list="pan-vals"/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

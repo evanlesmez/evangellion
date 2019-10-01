@@ -9,9 +9,12 @@ https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/05.3.ht
 https://dev.to/codehakase/building-a-web-app-with-go-gin-and-react-5ke
 
 
+JS audio library https://howlerjs.com/
+
+<!-- TODO test playin song with js in browser>
 <!-- TODO Snag random song near the end of the previous and queue it up to play>
 <!-- TODO auto increment Id's in tables>
-
+<!-- TODO as new files are curled, add them to db with a source url, artist (can be null), >
 <!-- TODO modularize & dockerize>
 <!-- TODO Host on raspberry Pi>
 <!-- TODO Fetch new songs & music from web -->
@@ -19,3 +22,5 @@ https://dev.to/codehakase/building-a-web-app-with-go-gin-and-react-5ke
 
 
 <!-- TODO Tag animations & artists with vibes>
+
+<!-- TODO test saving song a blob in sqlite might not be worth it because its slower>
